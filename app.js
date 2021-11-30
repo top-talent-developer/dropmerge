@@ -2,7 +2,7 @@ var express = require('express');
 var app = express();
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
-var port = 80;
+var port = 5000;
 var cors = require('cors');
 
 mongoose.connect('mongodb://localhost:27017/DropGame')
