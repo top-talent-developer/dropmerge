@@ -52,6 +52,10 @@ class Load extends Phaser.Scene {
 		this.load.image('btn_restart', 'img/btn_restart.png');
 		this.load.image('btn_pause', 'img/btn_pause.png');
 		this.load.image('btn_play', 'img/btn_play.png');
+
+
+
+
 		this.load.image('btn_back', 'img/btn_back.png');
 		this.load.image('btn_close', 'img/btn_close.png');
 		this.load.spritesheet('tiles', 'img/tiles.png', {frameWidth: 124, frameHeight: 124});

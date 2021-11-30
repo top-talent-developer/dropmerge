@@ -30,6 +30,8 @@ class Menu extends Phaser.Scene {
 		this.add.sprite(352, 800, 'best_bar_large');
 		this.add.text(400, 805, bestscore, {fontFamily: 'vanilla', fontSize: 35, align: 'center',color: '#FFFFFF'}).setOrigin(0.5);
 		let b_play = draw_button(360, 960, 'play', this);
+	
+
 		this.input.on('gameobjectdown', (pointer, obj)=>{
 			if(obj.button){
 				play_sound('click', this);
