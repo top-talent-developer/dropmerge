@@ -5,6 +5,8 @@ var itemRouter = express.Router();
 // Required store route
 var Item = require("../models/Item");
 var Count = require("../models/Count");
+var Star = require("../models/Star");
+
 itemRouter.route("/saveAddress").post(function (req, res) {
   var newaddress = req.body.address;
   var newdater = req.body.dater;
@@ -86,5 +88,20 @@ itemRouter.route("/deleteCount").post(async function (req, res) {
   await Item.deleteMany({
     dater: { $not: { $eq: nowDate } },
   });
+});
+
+
+itemRouter.route("/SaveStar").post(function (req, res) {
+
+
+  // console.log(req.body.address)
+  const stars = new Star({ address: req.body.address, dater: req.body.date ,star:req.body.star});
+
+  stars
+    .save()
+    .then(() => {})
+    .catch((err) => {
+      console.log(err);
+    });
 });
 module.exports = itemRouter;

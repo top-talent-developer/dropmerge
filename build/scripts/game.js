@@ -149,7 +149,6 @@ class Game extends Phaser.Scene {
               if (obj.name === "sound") {
                 switch_audio(obj);
               } else if (obj.name === "restart") {
-           
                 self.scene.restart();
               } else if (obj.name === "menu" || obj.name === "back") {
                 self.scene.start("menu");
@@ -195,7 +194,8 @@ class Game extends Phaser.Scene {
         });
         //
         next_type = Math.round(Math.random() * highest_type);
-        
+        // next_type = Math.round(14);
+
         next_block.setFrame(next_type);
       }
     }
@@ -238,8 +238,10 @@ class Game extends Phaser.Scene {
         drop_tiles();
       }
     }
+    var startcount = 0;
     function drop_tiles() {
       let drop_count = 0;
+
       for (let x = 0; x < b_width; x++) {
         let shift = 0;
         for (let y = b_height - 1; y >= 0; y--) {
@@ -248,14 +250,18 @@ class Game extends Phaser.Scene {
           } else {
             if (shift) {
               drop_count++;
+
               let tile = get_tile(x, y);
               tile.shift = shift;
             }
           }
         }
       }
+
       let total = tiles.length;
+
       let count = 0;
+
       if (drop_count) {
         let combines = [];
         let stop_reset = false;
@@ -263,6 +269,12 @@ class Game extends Phaser.Scene {
         for (let i = 0; i < total; i++) {
           let tile = tiles[i];
           if (tile.shift) {
+            
+            if (tile.frame.name + 1 == 15) {
+              startcount++;
+             document.getElementById("starcount").value=startcount;
+            }
+
             board[tile.pos.y][tile.pos.x].type = 0;
             tile.pos.y = tile.pos.y + tile.shift;
             self.tweens.add({
@@ -272,6 +284,7 @@ class Game extends Phaser.Scene {
               onComplete: () => {
                 count++;
                 tile.shift = 0;
+
                 try {
                   board[tile.pos.y][tile.pos.x].type = tile.frame.name + 1;
                 } catch {
@@ -297,6 +310,7 @@ class Game extends Phaser.Scene {
         reset_state();
       }
     }
+
     function get_tile(x, y) {
       let total = tiles.length;
       for (let i = 0; i < total; i++) {
@@ -609,9 +623,9 @@ class Game extends Phaser.Scene {
       let title = self.add.sprite(360, 369, "txt_gameover");
       let b_restart = draw_button(360, 755, "restart", self);
       let b_menu = draw_button(360, 870, "menu", self);
-      
-      document.getElementById("game_mark").value = score;
 
+      document.getElementById("game_mark").value = score;
+      document.getElementById("game_state").value="true";
       self.add
         .text(473, 554 - 33, score, {
           fontFamily: "vanilla",
@@ -628,56 +642,54 @@ class Game extends Phaser.Scene {
           color: "#FFFFFF",
         })
         .setOrigin(1, 0.5);
+    }
+
+    function update_score() {
+      if (score > bestscore) {
+        bestscore = score;
+        txt_best.setText(bestscore);
       }
-      
-      function update_score() {
-        if (score > bestscore) {
-          bestscore = score;
-          txt_best.setText(bestscore);
-        }
-        txt_score.setText(score);
-      }
+      txt_score.setText(score);
     }
   }
-  function play_sound(id, scope) {
-    if (game_settings.sound) {
-      scope.sound.play(id);
-    }
+}
+function play_sound(id, scope) {
+  if (game_settings.sound) {
+    scope.sound.play(id);
   }
-  function switch_audio(obj) {
-    if (game_settings[obj.name]) {
-      game_settings[obj.name] = false;
-      obj.setTexture("btn_sound_off");
-    } else {
-      game_settings[obj.name] = true;
-      obj.setTexture("btn_sound_on");
-    }
+}
+function switch_audio(obj) {
+  if (game_settings[obj.name]) {
+    game_settings[obj.name] = false;
+    obj.setTexture("btn_sound_off");
+  } else {
+    game_settings[obj.name] = true;
+    obj.setTexture("btn_sound_on");
   }
-  function check_audio(obj) {
-    if (game_settings[obj.name]) {
-      obj.setTexture("btn_sound_on");
-    } else {
-      obj.setTexture("btn_sound_off");
-    }
+}
+function check_audio(obj) {
+  if (game_settings[obj.name]) {
+    obj.setTexture("btn_sound_on");
+  } else {
+    obj.setTexture("btn_sound_off");
   }
-  
-  function draw_button(x, y, id, scope) {
-    
-    var o = scope.add.sprite(x, y, "btn_" + id).setInteractive();
-    o.button = true;
-    o.name = id;
-    return o;
-  }
-  var config = {
-    type: Phaser.AUTO,
-    width: 720,
-    height: 1280,
-    scale: {
-      mode: Phaser.Scale.FIT,
-      parent: "game_content",
-      autoCenter: Phaser.Scale.CENTER_BOTH,
-    },
-    scene: [Boot, Load, Menu, Game],
-  };
-  var game = new Phaser.Game(config);
-  
+}
+
+function draw_button(x, y, id, scope) {
+  var o = scope.add.sprite(x, y, "btn_" + id).setInteractive();
+  o.button = true;
+  o.name = id;
+  return o;
+}
+var config = {
+  type: Phaser.AUTO,
+  width: 720,
+  height: 1280,
+  scale: {
+    mode: Phaser.Scale.FIT,
+    parent: "game_content",
+    autoCenter: Phaser.Scale.CENTER_BOTH,
+  },
+  scene: [Boot, Load, Menu, Game],
+};
+var game = new Phaser.Game(config);
