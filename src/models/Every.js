@@ -2,16 +2,20 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 // Define collection and schema for Items
-var Count = new Schema({
+var  Every= new Schema({
     address: {
         type: String
+    },
+    score:{
+        type:Number,
+        default:0,
     },
     dater:{
         type:String,
     },
 
 },{
-    collection: 'counts'
+    collection: 'everys'
 });
 
-module.exports = Count = mongoose.model('Count', Count);
+module.exports = Every = mongoose.model('Everys', Every);

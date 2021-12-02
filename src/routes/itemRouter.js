@@ -6,6 +6,7 @@ var itemRouter = express.Router();
 var Item = require("../models/Item");
 
 var Star = require("../models/Star");
+var Every = require("../models/Every");
 
 itemRouter.route("/saveAddress").post(function (req, res) {
   var newaddress = req.body.address;
@@ -30,13 +31,14 @@ itemRouter.route("/saveAddress").post(function (req, res) {
 });
 itemRouter.route("/SaveScore").post(function (req, res) {
   const { address, score, date } = req.body;
+  var counts;
   Item.findOne({ address: address }).then((ress) => {
     if (ress) {
       if (ress.score < score) {
         ress.score = score;
         ress
           .save()
-          .then(() => { 
+          .then(() => {
             res.json({ success: true });
           })
           .catch((err) => {
@@ -51,7 +53,54 @@ itemRouter.route("/SaveScore").post(function (req, res) {
     }
   });
 
+  Every.find({ $and: [{ dater: date }, { address: address }] }).then(
+    (resss) => {
+      for (const data of resss) {
+        counts = data.score;
+        if (counts < score) {
+          data.score = score;
+          data
+            .save()
+            .then(() => {
+              res.json({ success: true });
+            })
+            .catch((err) => {
+              console.log(err);
+              res.json({ success: false });
+            });
+        }
+      }
+    }
+  );
 });
+
+itemRouter.route("/EverySaveScore").post(function (req, res) {
+  var newaddress = req.body.address;
+  var newdater = req.body.date;
+  var newscore = req.body.score;
+
+  Every.findOne({ address: newaddress }).then((ress) => {
+    Every.findOne({ dater: newdater }).then((resss) => {
+      if (!ress || (ress && !resss)) {
+        const useraddress = new Every({
+          address: newaddress,
+          dater: newdater,
+          score: newscore,
+        });
+        useraddress
+          .save()
+          .then(() => {
+            res.json({ success: true });
+          })
+          .catch((err) => {
+            console.log(err);
+            res.json({ success: false });
+          });
+      }
+    });
+  });
+});
+
 itemRouter.route("/getCount").post(async function (req, res) {
   var counts = [];
   var addresses = [];
@@ -72,7 +121,6 @@ itemRouter.route("/deleteCount").post(async function (req, res) {
     current.getMonth() + 1
   }/${current.getFullYear()}`;
 
-
   await Item.deleteMany({
     dater: { $not: { $eq: nowDate } },
   });
@@ -81,10 +129,11 @@ itemRouter.route("/deleteCount").post(async function (req, res) {
   });
 });
 itemRouter.route("/SaveStar").post(function (req, res) {
-
-
-  // console.log(req.body.address)
-  const stars = new Star({ address: req.body.address, dater: req.body.date ,star:req.body.star});
+  const stars = new Star({
+    address: req.body.address,
+    dater: req.body.date,
+    star: req.body.star,
+  });
 
   stars
     .save()
