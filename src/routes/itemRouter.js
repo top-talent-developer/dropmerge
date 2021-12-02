@@ -4,7 +4,7 @@ var itemRouter = express.Router();
 
 // Required store route
 var Item = require("../models/Item");
-var Count = require("../models/Count");
+
 var Star = require("../models/Star");
 
 itemRouter.route("/saveAddress").post(function (req, res) {
@@ -28,17 +28,15 @@ itemRouter.route("/saveAddress").post(function (req, res) {
     }
   });
 });
-
 itemRouter.route("/SaveScore").post(function (req, res) {
   const { address, score, date } = req.body;
-
   Item.findOne({ address: address }).then((ress) => {
     if (ress) {
       if (ress.score < score) {
         ress.score = score;
         ress
           .save()
-          .then(() => {
+          .then(() => { 
             res.json({ success: true });
           })
           .catch((err) => {
@@ -52,22 +50,14 @@ itemRouter.route("/SaveScore").post(function (req, res) {
       res.send({ success: false });
     }
   });
-  const count = new Count({ address: address, dater: date });
 
-  count
-    .save()
-    .then(() => {})
-    .catch((err) => {
-      console.log(err);
-    });
 });
-
 itemRouter.route("/getCount").post(async function (req, res) {
   var counts = [];
   var addresses = [];
   var ItemData = await Item.find({});
   for (const data of ItemData) {
-    var ress = await Count.find({
+    var ress = await Star.find({
       address: data.address,
       dater: req.body.date,
     });
@@ -82,15 +72,14 @@ itemRouter.route("/deleteCount").post(async function (req, res) {
     current.getMonth() + 1
   }/${current.getFullYear()}`;
 
-  await Count.deleteMany({
-    dater: { $not: { $eq: nowDate } },
-  });
+
   await Item.deleteMany({
     dater: { $not: { $eq: nowDate } },
   });
+  await Star.deleteMany({
+    dater: { $not: { $eq: nowDate } },
+  });
 });
-
-
 itemRouter.route("/SaveStar").post(function (req, res) {
 
 
