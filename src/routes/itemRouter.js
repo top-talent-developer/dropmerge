@@ -121,9 +121,9 @@ itemRouter.route("/deleteCount").post(async function (req, res) {
   await Item.deleteMany({
     dater: { $not: { $eq: nowDate } },
   });
-  await Star.deleteMany({
-    dater: { $not: { $eq: nowDate } },
-  });
+  // await Star.deleteMany({
+  //   dater: { $not: { $eq: nowDate } },
+  // });
 });
 itemRouter.route("/SaveStar").post(function (req, res) {
   const stars = new Star({
