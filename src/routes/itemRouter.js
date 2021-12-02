@@ -52,33 +52,12 @@ itemRouter.route("/SaveScore").post(function (req, res) {
       res.send({ success: false });
     }
   });
-
-  Every.find({ $and: [{ dater: date }, { address: address }] }).then(
-    (resss) => {
-      for (const data of resss) {
-        counts = data.score;
-        if (counts < score) {
-          data.score = score;
-          data
-            .save()
-            .then(() => {
-              res.json({ success: true });
-            })
-            .catch((err) => {
-              console.log(err);
-              res.json({ success: false });
-            });
-        }
-      }
-    }
-  );
 });
 
 itemRouter.route("/EverySaveScore").post(function (req, res) {
   var newaddress = req.body.address;
   var newdater = req.body.date;
   var newscore = req.body.score;
-
   Every.findOne({ address: newaddress }).then((ress) => {
     Every.findOne({ dater: newdater }).then((resss) => {
       if (!ress || (ress && !resss)) {
@@ -96,6 +75,24 @@ itemRouter.route("/EverySaveScore").post(function (req, res) {
             console.log(err);
             res.json({ success: false });
           });
+      } else {
+        Every.find({
+          $and: [{ dater: newdater }, { address: newaddress }],
+        }).then((resss) => {
+          console.log(resss[0].score);
+          if (resss[0].score < newscore) {
+            resss[0].score = newscore;
+            resss[0]
+              .save()
+              .then(() => {
+                res.json({ success: true });
+              })
+              .catch((err) => {
+                console.log(err);
+                res.json({ success: false });
+              });
+          }
+        });
       }
     });
   });
