@@ -58,28 +58,44 @@ itemRouter.route("/EverySaveScore").post(function (req, res) {
   var newaddress = req.body.address;
   var newdater = req.body.date;
   var newscore = req.body.score;
-  Every.findOne({ address: newaddress }).then((ress) => {
-    Every.findOne({ dater: newdater }).then((resss) => {
-      if (!ress || (ress && !resss)) {
-        const useraddress = new Every({
+  Every.find({ address: newaddress }).then((ress) => {
+    var lastDater = "ok";
+    ress.map((d) => {
+      lastDater = d.dater;
+    });
+    if (lastDater === "ok") {
+      const useraddress = {
+        address: newaddress,
+        dater: newdater,
+        score: newscore,
+      };
+      Every.create(useraddress, function (err, res) {
+        if (err) {
+          console.log("could not insert");
+          res.json({ success: false });
+        }
+        console.log("inserted account");
+        // Every.close();
+      });
+    } else {
+      if (lastDater !== newdater) {
+        const useraddress = {
           address: newaddress,
           dater: newdater,
           score: newscore,
-        });
-        useraddress
-          .save()
-          .then(() => {
-            res.json({ success: true });
-          })
-          .catch((err) => {
-            console.log(err);
+        };
+        Every.create(useraddress, function (err, res) {
+          if (err) {
+            console.log("could not insert");
             res.json({ success: false });
-          });
+          }
+          console.log("inserted account");
+          // Every.close();
+        });
       } else {
         Every.find({
           $and: [{ dater: newdater }, { address: newaddress }],
         }).then((resss) => {
-          // console.log(resss[0].score);
           if (resss[0].score < newscore) {
             resss[0].score = newscore;
             resss[0]
@@ -94,10 +110,28 @@ itemRouter.route("/EverySaveScore").post(function (req, res) {
           }
         });
       }
-    });
+    }
   });
 });
-
+// else if (resss.dater == newdater) {
+//   console.log("4");
+//   Every.find({
+//     $and: [{ dater: newdater }, { address: newaddress }],
+//   }).then((resss) => {
+//     if (resss[0].score < newscore) {
+//       resss[0].score = newscore;
+//       resss[0]
+//         .save()
+//         .then(() => {
+//           res.json({ success: true });
+//         })
+//         .catch((err) => {
+//           console.log(err);
+//           res.json({ success: false });
+//         });
+//     }
+//   });
+// }
 itemRouter.route("/getCount").post(async function (req, res) {
   var counts = [];
   var addresses = [];
