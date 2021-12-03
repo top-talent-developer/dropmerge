@@ -113,25 +113,6 @@ itemRouter.route("/EverySaveScore").post(function (req, res) {
     }
   });
 });
-// else if (resss.dater == newdater) {
-//   console.log("4");
-//   Every.find({
-//     $and: [{ dater: newdater }, { address: newaddress }],
-//   }).then((resss) => {
-//     if (resss[0].score < newscore) {
-//       resss[0].score = newscore;
-//       resss[0]
-//         .save()
-//         .then(() => {
-//           res.json({ success: true });
-//         })
-//         .catch((err) => {
-//           console.log(err);
-//           res.json({ success: false });
-//         });
-//     }
-//   });
-// }
 itemRouter.route("/getCount").post(async function (req, res) {
   var counts = [];
   var addresses = [];
