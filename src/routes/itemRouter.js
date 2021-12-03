@@ -79,7 +79,7 @@ itemRouter.route("/EverySaveScore").post(function (req, res) {
         Every.find({
           $and: [{ dater: newdater }, { address: newaddress }],
         }).then((resss) => {
-          console.log(resss[0].score);
+          // console.log(resss[0].score);
           if (resss[0].score < newscore) {
             resss[0].score = newscore;
             resss[0]
@@ -126,6 +126,7 @@ itemRouter.route("/deleteCount").post(async function (req, res) {
   // });
 });
 itemRouter.route("/SaveStar").post(function (req, res) {
+  // console.log(req.body.star)
   const stars = new Star({
     address: req.body.address,
     dater: req.body.date,

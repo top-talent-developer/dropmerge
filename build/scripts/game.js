@@ -194,7 +194,7 @@ class Game extends Phaser.Scene {
         });
         //
         next_type = Math.round(Math.random() * highest_type);
-        // next_type = Math.round(13);
+         //next_type = Math.round(12);
 
         next_block.setFrame(next_type);
       }
@@ -272,7 +272,14 @@ class Game extends Phaser.Scene {
             
             if (tile.frame.name + 1 == 15) {
               startcount++;
-             document.getElementById("starcount").value=startcount;
+              document.getElementById("starcount").value=startcount;
+              //  document.getElementById("starcount").value=0;
+              if(startcount){
+                document.getElementById("starModal").style.opacity=1;
+                setTimeout(() => {
+                  document.getElementById("starModal").style.opacity=0;
+                }, 3000);
+              }
             }
 
             board[tile.pos.y][tile.pos.x].type = 0;
