@@ -6,6 +6,8 @@ var itemRouter = express.Router();
 var Item = require("../models/Item");
 
 var Star = require("../models/Star");
+var Estar = require("../models/Estar");
+
 var Every = require("../models/Every");
 
 itemRouter.route("/saveAddress").post(function (req, res) {
@@ -71,10 +73,10 @@ itemRouter.route("/EverySaveScore").post(function (req, res) {
       };
       Every.create(useraddress, function (err, res) {
         if (err) {
-          console.log("could not insert");
+          // console.log("could not insert");
           res.json({ success: false });
         }
-        console.log("inserted account");
+        // console.log("inserted account");
         // Every.close();
       });
     } else {
@@ -86,10 +88,10 @@ itemRouter.route("/EverySaveScore").post(function (req, res) {
         };
         Every.create(useraddress, function (err, res) {
           if (err) {
-            console.log("could not insert");
+            // console.log("could not insert");
             res.json({ success: false });
           }
-          console.log("inserted account");
+          // console.log("inserted account");
           // Every.close();
         });
       } else {
@@ -136,15 +138,16 @@ itemRouter.route("/deleteCount").post(async function (req, res) {
   await Item.deleteMany({
     dater: { $not: { $eq: nowDate } },
   });
-  await Star.deleteMany({
-    dater: { $not: { $eq: nowDate } },
-  });
+  // await Star.deleteMany({
+  //   dater: { $not: { $eq: nowDate } },
+  // });
 });
 itemRouter.route("/SaveStar").post(function (req, res) {
-  // console.log(req.body.star)
+  console.log("save star")
   const stars = new Star({
     address: req.body.address,
     dater: req.body.date,
+    dater1:req.body.date1,
     star: req.body.star,
   });
 
@@ -154,5 +157,37 @@ itemRouter.route("/SaveStar").post(function (req, res) {
     .catch((err) => {
       console.log(err);
     });
+});
+
+itemRouter.route("/ESaveStar").post(function (req, res) {
+  Estar.findOne({ address: req.body.address }).then((ress) => {
+    if (!ress) {
+      const stars = new Estar({
+        address: req.body.address,
+        star: req.body.star,
+      });
+
+      stars
+        .save()
+        .then(() => {})
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      let number = new Number();
+      Star.find({ address: req.body.address }).then((res) => {
+        res.map((d) => {
+          number += d.star;
+        });
+        ress.star = number;
+        ress
+          .save()
+          .then(() => {})
+          .catch((err) => {
+            console.log(err);
+          });
+      });
+    }
+  });
 });
 module.exports = itemRouter;

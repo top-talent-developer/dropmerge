@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 // Define collection and schema for Items
-var Star = new Schema({
+var Estar = new Schema({
     address: {
         type: String
     },
@@ -12,12 +12,9 @@ var Star = new Schema({
     dater:{
         type:String,
     },
-    dater1:{
-        type:String,
-    },
 
 },{
-    collection: 'stars'
+    collection: 'estars'
 });
 
-module.exports = Star = mongoose.model('Star', Star);
+module.exports = Estar = mongoose.model('Estar', Estar);
