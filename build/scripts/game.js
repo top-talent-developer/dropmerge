@@ -194,7 +194,7 @@ class Game extends Phaser.Scene {
         });
         //
         next_type = Math.round(Math.random() * highest_type);
-        // next_type = Math.round(14);
+        // next_type = Math.round(12);
 
         next_block.setFrame(next_type);
       }
